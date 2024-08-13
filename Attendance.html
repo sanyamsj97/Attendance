@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Attendance Calculator</h1>
+    <form id="attendanceForm">
+        <label for="attendancePercentage">Enter desired attendance percentage (e.g., 75):</label>
+        <input type="number" id="attendancePercentage" name="attendancePercentage" min="0" max="100" required>
+        <button type="button" onclick="calculateAttendance()">Calculate</button>
+    </form>
+
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Max Missed Classes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        const subjects = {
+            "PEA515": 4,
+            "CAP443": 4,
+            "CAP570": 5,
+            "CAP478": 2,
+            "CAP455": 5,
+            "CAP100": 2,
+            "CAP476": 2,
+            "PEL544": 4,
+            "CAP598": 3
+        };
+
+        function calculateTotalClasses(classesPerWeek, totalWeeks = 14) {
+            return classesPerWeek * totalWeeks;
+        }
+
+        function calculateMaxAbsentClasses(totalClasses, desiredPercentage) {
+            const requiredAttendancePercentage = desiredPercentage;
+            return Math.floor(totalClasses * (1 - requiredAttendancePercentage / 100));
+        }
+
+        function calculateAttendance() {
+            const desiredPercentage = parseFloat(document.getElementById('attendancePercentage').value);
+            const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ''; // Clear previous results
+
+            for (const [subject, classesPerWeek] of Object.entries(subjects)) {
+                const totalClasses = calculateTotalClasses(classesPerWeek);
+                const maxAbsentClasses = calculateMaxAbsentClasses(totalClasses, desiredPercentage);
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject}</td>
+                    <td>${maxAbsentClasses}</td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+    </script>
+</body>
+</html>
